@@ -70,6 +70,7 @@ def last(iter):
         pass
     return x
 
+
 def first(iter):
     """
     Get the first value produced by an iterator.
@@ -87,9 +88,30 @@ def head(n, iter):
     for i, k in zip(range(n), iter):
         yield k
 
+
 def tail(n, iter):
     """
     Get the last 'n' items from an iterator (as an iterator). May run forever if the iterator doesn't terminate!
     """
     yield from deque(iter, n)
 
+
+
+
+class IteratorMemoiser:
+    """
+    A wrapper around an iterator to cache/memoise it's results.
+    """
+
+    def __init__(self, source_iterator):
+        self.source = source_iterator
+        self.cache = []
+
+    def __iter__(self):
+        index = 0
+        while True:
+            while index >= len(self.cache):
+                self.cache.append(next(self.source))
+
+            yield self.cache[index]
+            index += 1
